@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
+const PIN_CODE = "5555";
+
 type Page = "home" | "products" | "cart" | "payment" | "settings";
 
 interface Product {
@@ -45,6 +47,10 @@ const STATS = [
 ];
 
 export default function Index() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+
   const [page, setPage] = useState<Page>("home");
   const [cart, setCart] = useState<CartItem[]>([]);
   const [search, setSearch] = useState("");
@@ -80,6 +86,27 @@ export default function Index() {
   const cartTotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const cartCount = cart.reduce((sum, i) => sum + i.qty, 0);
 
+  const handlePinPress = (digit: string) => {
+    if (pinError) setPinError(false);
+    const next = pin + digit;
+    if (next.length <= 4) {
+      setPin(next);
+      if (next.length === 4) {
+        if (next === PIN_CODE) {
+          setTimeout(() => setUnlocked(true), 300);
+        } else {
+          setPinError(true);
+          setTimeout(() => setPin(""), 600);
+        }
+      }
+    }
+  };
+
+  const handlePinDelete = () => {
+    if (pinError) setPinError(false);
+    setPin((p) => p.slice(0, -1));
+  };
+
   const handlePay = () => {
     setPaySuccess(true);
     setTimeout(() => {
@@ -96,6 +123,80 @@ export default function Index() {
     { id: "payment", label: "Оплата", icon: "CreditCard" },
     { id: "settings", label: "Настройки", icon: "Settings" },
   ];
+
+  if (!unlocked) {
+    return (
+      <div
+        className="flex h-screen items-center justify-center bg-background"
+        style={{ fontFamily: "'Golos Text', sans-serif" }}
+      >
+        <div className="flex flex-col items-center gap-8 w-full max-w-xs px-6">
+          {/* Logo */}
+          <div className="flex flex-col items-center gap-3">
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #3b82f6, #6366f1)", boxShadow: "0 0 30px rgba(59,130,246,0.35)" }}
+            >
+              <Icon name="Zap" size={30} className="text-white" />
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-black text-foreground">
+                Касса<span style={{ color: "#3b82f6" }}>Про</span>
+              </div>
+              <div className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>Введите PIN-код для входа</div>
+            </div>
+          </div>
+
+          {/* Dots */}
+          <div className="flex gap-4">
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="w-4 h-4 rounded-full transition-all duration-200"
+                style={{
+                  background: pinError
+                    ? "#ef4444"
+                    : i < pin.length
+                    ? "#3b82f6"
+                    : "hsl(var(--border))",
+                  transform: pinError ? "scale(1.2)" : "scale(1)",
+                  boxShadow: i < pin.length && !pinError ? "0 0 10px rgba(59,130,246,0.5)" : "none",
+                }}
+              />
+            ))}
+          </div>
+
+          {pinError && (
+            <p className="text-sm font-semibold -mt-4" style={{ color: "#ef4444" }}>
+              Неверный код
+            </p>
+          )}
+
+          {/* Numpad */}
+          <div className="grid grid-cols-3 gap-3 w-full">
+            {["1","2","3","4","5","6","7","8","9","","0","⌫"].map((key, idx) => (
+              key === "" ? (
+                <div key={idx} />
+              ) : (
+                <button
+                  key={idx}
+                  onClick={() => key === "⌫" ? handlePinDelete() : handlePinPress(key)}
+                  className="h-14 rounded-2xl text-lg font-bold transition-all active:scale-95 hover:scale-105"
+                  style={{
+                    background: key === "⌫" ? "hsl(var(--secondary))" : "hsl(var(--secondary))",
+                    color: key === "⌫" ? "hsl(var(--muted-foreground))" : "hsl(var(--foreground))",
+                    border: "1px solid hsl(var(--border))",
+                  }}
+                >
+                  {key}
+                </button>
+              )
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden" style={{ fontFamily: "'Golos Text', sans-serif" }}>
