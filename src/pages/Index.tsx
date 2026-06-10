@@ -141,7 +141,7 @@ export default function Index() {
             </div>
             <div className="text-center">
               <div className="text-2xl font-black text-foreground">
-                Касса<span style={{ color: "#3b82f6" }}>Про</span>
+                Касса <span style={{ color: "#3b82f6" }}>Просбер</span>
               </div>
               <div className="text-sm mt-1" style={{ color: "hsl(var(--muted-foreground))" }}>Введите PIN-код для входа</div>
             </div>
@@ -212,7 +212,7 @@ export default function Index() {
           </div>
           {sidebarOpen && (
             <span className="font-black text-lg tracking-tight text-foreground">
-              Касса<span style={{ color: "#3b82f6" }}>Про</span>
+              Касса <span style={{ color: "#3b82f6" }}>Просбер</span>
             </span>
           )}
         </div>
