@@ -102,7 +102,7 @@ export default function Index() {
       {/* Sidebar */}
       <aside
         className={`flex flex-col transition-all duration-300 ${sidebarOpen ? "w-60" : "w-16"} shrink-0`}
-        style={{ background: "hsl(220,20%,6%)", borderRight: "1px solid hsl(var(--border))" }}
+        style={{ background: "hsl(var(--sidebar-background))", borderRight: "1px solid hsl(var(--border))" }}
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5" style={{ borderBottom: "1px solid hsl(var(--border))" }}>
@@ -110,8 +110,8 @@ export default function Index() {
             <Icon name="Zap" size={18} className="text-white" />
           </div>
           {sidebarOpen && (
-            <span className="font-black text-lg tracking-tight text-white">
-              Касса<span style={{ color: "#60a5fa" }}>Про</span>
+            <span className="font-black text-lg tracking-tight text-foreground">
+              Касса<span style={{ color: "#3b82f6" }}>Про</span>
             </span>
           )}
         </div>
